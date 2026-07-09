@@ -21,5 +21,7 @@ def test_no_enemies_mode():
     }
     memory = {}
     action, _ = decide(state, memory)
-    # Should default to searching (moving toward center or wandering)
+    # Should default to searching (moving toward center)
     assert action["type"] == "move"
+    assert "angle" in action
+    assert "dist" in action
