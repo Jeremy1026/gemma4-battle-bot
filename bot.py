@@ -5,20 +5,23 @@ def decide(state: dict, memory: dict) -> tuple[dict, dict]:
     me = state.get("self", {"x": 50, "y": 50, "angle": 0})
     enemies = state.get("enemies", [])
     new_memory = memory.copy()
-    action = {"type": "move", "direction": "none"}
 
     if not enemies:
-        # Search mode: move toward center
-        dx = 50 - me["x"]
-        dy = 50 - me["y"]
-        action = {"type": "move", "direction": "towards_center"}
-        return action, new_memory
+        return {"type": "move", "direction": "center"}, new_memory
 
-    # Find nearest enemy
     nearest = min(enemies, key=lambda e: math.sqrt((e["x"]-me["x"])**2 + (e["y"]-me["y"])**2))
 
-    # Logic for moving/attacking will go here...
-    return action, new_memory
+    # Target angle
+    target_angle = math.atan2(nearest["y"] - me["y"], nearest["x"] - me["x"])
+
+    # Angular error calculation
+    error = (target_angle - me["angle"] + math.pi) % (2 * math.pi) - math.pi
+
+    if abs(error) <= math.radians(22.5):
+        return {"type": "attack", "target": nearest["id"]}, new_memory
+    else:
+        # Rotate and move
+        return {"type": "move", "angle": target_angle, "dist": 1}, new_memory
 
 if __name__ == "__main__":
     # Simple local test structure
