@@ -1,5 +1,4 @@
 import math
-import random
 
 def decide(state: dict, memory: dict) -> tuple[dict, dict]:
     me = state.get("self", {"x": 50, "y": 50, "angle": 0})
